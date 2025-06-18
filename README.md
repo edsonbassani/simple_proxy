@@ -38,3 +38,41 @@ Inside the script:
 ```powershell
 $tokenUrl = "https://external-api.domain.com"
 $serverPort = 8032
+
+This will forward all requests to:
+https://external-api.domain.com:8032/<original-path>
+
+---
+
+🚀 Usage
+1. Place the script on a QA or staging server with outbound access.
+
+2. Run it with PowerShell:
+```powershell
+.\proxy.ps1
+
+3. From your dev environment, send HTTP requests to:
+http://<qa-server-ip>:8032/...
+
+4. The proxy forwards your request and prints the response.
+
+---
+
+📌 Example
+POST http://10.0.0.100:8032/auth/token
+
+Will be forwarded as:
+POST https://external-api.domain.com:8032/auth/token
+
+And return the API’s original response, including access tokens or errors.
+
+---
+
+📄 License
+This project is licensed under the MIT License.
+
+---
+
+Created with ❤️ to bypass corporate firewalls and keep development moving.
+
+
