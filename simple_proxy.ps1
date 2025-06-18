@@ -15,7 +15,7 @@ while ($true) {
         $response = $context.Response
         $method   = $request.HttpMethod
         $rawUrl   = $request.RawUrl
-        $targetUrl = "{0}:{1}{2}" -f $tokenUrl, $serverPort, $rawUrl
+        $targetUrl = "{0}:{1}{2}" -f $tokenUrl, $targetPort, $rawUrl
 
         Write-Host "$method -> $targetUrl" -ForegroundColor Yellow
 
