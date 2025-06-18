@@ -1,6 +1,6 @@
 Add-Type -AssemblyName System.Net.Http
 
-$tokenUrl = "https://external_api_url"
+$tokenUrl = "https://external-api.domain.com"
 $serverPort = 8032
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://+:$serverPort/")
