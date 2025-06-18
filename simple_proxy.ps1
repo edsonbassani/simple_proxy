@@ -1,11 +1,12 @@
 Add-Type -AssemblyName System.Net.Http
 
 $tokenUrl = "https://external-api.domain.com"
-$serverPort = 8032
+$targetPort = <external-port>
+$serverPort = <current-server-port>
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://+:$serverPort/")
 $listener.Start()
-Write-Host "🟢 Proxy listening at Port $serverPort" -ForegroundColor Green
+Write-Host "Proxy listening at Port $serverPort" -ForegroundColor Green
 
 while ($true) {
     try {
@@ -18,9 +19,16 @@ while ($true) {
 
         Write-Host "$method -> $targetUrl" -ForegroundColor Yellow
 
+        #Method
+        if ($method -eq "GET") {
+            $hasBody = $false
+        } else {
+            $hasBody = $request.HasEntityBody
+        }
+
         # Body
         $body = ""
-        if ($request.HasEntityBody) {
+        if ($hasBody) {
             $reader = New-Object System.IO.StreamReader($request.InputStream, $request.ContentEncoding)
             $body = $reader.ReadToEnd()
         }
@@ -34,10 +42,14 @@ while ($true) {
         }
 
         # Invoke-WebRequest
-        if ($request.ContentType) {
-            $result = Invoke-WebRequest -Uri $targetUrl -Method $method -Body $body -Headers $headers -UseBasicParsing -ContentType $request.ContentType -ErrorAction Stop
+        if ($method -eq "GET") {
+            $result = Invoke-WebRequest -Uri $targetUrl -Method $method -Headers $headers -UseBasicParsing
         } else {
-            $result = Invoke-WebRequest -Uri $targetUrl -Method $method -Body $body -Headers $headers -UseBasicParsing
+            if ($request.ContentType) {
+            $result = Invoke-WebRequest -Uri $targetUrl -Method $method -Body $body -Headers $headers -UseBasicParsing -ContentType $request.ContentType -ErrorAction Stop
+            } else {
+                $result = Invoke-WebRequest -Uri $targetUrl -Method $method -Body $body -Headers $headers -UseBasicParsing
+            }
         }
 
         $responseBytes = [System.Text.Encoding]::UTF8.GetBytes($result.Content)
