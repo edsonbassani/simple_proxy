@@ -36,7 +36,7 @@ while ($true) {
         # Headers
         $headers = @{}
         foreach ($key in $request.Headers.AllKeys) {
-            if ($key -notin @("Host", "Content-Length", "Connection", "Keep-Alive", "Proxy-Connection")) {
+            if ($key -notin @("Host", "Content-Length", "Connection", "Keep-Alive", "Proxy-Connection", "Expect")) {
                 $headers[$key] = $request.Headers[$key]
             }
         }
@@ -44,10 +44,14 @@ while ($true) {
         # Invoke-WebRequest
         if ($method -eq "GET") {
             $result = Invoke-WebRequest -Uri $targetUrl -Method $method -Headers $headers -UseBasicParsing
-        } else {
+        } 
+        else 
+        {
             if ($request.ContentType) {
             $result = Invoke-WebRequest -Uri $targetUrl -Method $method -Body $body -Headers $headers -UseBasicParsing -ContentType $request.ContentType -ErrorAction Stop
-            } else {
+            } 
+            else 
+            {
                 $result = Invoke-WebRequest -Uri $targetUrl -Method $method -Body $body -Headers $headers -UseBasicParsing
             }
         }
